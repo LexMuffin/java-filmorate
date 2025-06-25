@@ -28,13 +28,13 @@ public class FilmControllerTest {
     @Test
     public void postFilmAndGetStatusIsOk() throws Exception {
         String jsonString = """
-                {
+                    {
                     "name": "nisi eiusmod",
                     "description": "adipisicing",
                     "releaseDate": "1967-03-25",
                     "duration": 100
-                }
-                """;
+                    }
+                    """;
 
         mvc.perform(post("/films")
                         .contentType("application/json")
@@ -46,13 +46,13 @@ public class FilmControllerTest {
     @Test
     public void postFilmAndGetStatusBadRequestMethodArgumentNotValidException() throws Exception {
         String jsonString = """
-                {
+                    {
                     "name": "Name",
                     "description": "Description",
                     "releaseDate": "1890-03-25",
                     "duration": -200
-                }
-                """;
+                    }
+                    """;
 
         mvc.perform(post("/films")
                 .contentType("application/json")
