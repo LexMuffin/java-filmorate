@@ -41,14 +41,12 @@ public class FilmControllerTest {
 
     @Test
     public void postFilmAndGetStatusBadRequestMethodArgumentNotValidException() throws Exception {
-        String jsonString = """
-                    {
-                    "name": "Name",
-                    "description": "Description",
-                    "releaseDate": "1890-03-25",
-                    "duration": -200
-                    }
-                    """;
+        String jsonString = "{\n" +
+                "\"name\": \"Name\",\n" +
+                "\"description\": \"Description\",\n" +
+                "\"releaseDate\": \"1890-03-25\",\n" +
+                "\"duration\": -200\n" +
+                "}\n";
 
         mvc.perform(post("/films")
                 .contentType("application/json")
@@ -59,15 +57,13 @@ public class FilmControllerTest {
 
     @Test
     public void postFilmAndGetStatusBadRequest() throws Exception {
+        String jsonString = "{\n" +
+                "\"name\": \"Film name\",\n" +
+                "\"description\": \"Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, а именно 20 миллионов. о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.\",\n" +
+                "\"releaseDate\": \"1900-03-25\",\n" +
+                "\"duration\": 200\n" +
+                "}\n";
 
-        String jsonString = """
-                {
-                    "name": "Film name",
-                    "description": "Пятеро друзей ( комик-группа «Шарло»), приезжают в город Бризуль. Здесь они хотят разыскать господина Огюста Куглова, который задолжал им деньги, а именно 20 миллионов. о Куглов, который за время «своего отсутствия», стал кандидатом Коломбани.",
-                    "releaseDate": "1900-03-25",
-                    "duration": 200
-                }
-                """;
         mvc.perform(post("/films")
                 .contentType("application/json")
                 .content(jsonString)

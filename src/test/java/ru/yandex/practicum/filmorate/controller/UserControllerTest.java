@@ -22,13 +22,16 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
     }
 
+
+
     @Test
     public void postUserAndGetStatusIsOk() throws Exception {
-        String jsonString = """
-                {"login": "common",
-                    "email": "friend@common.ru",
-                    "birthday": "2000-08-20"}
-                """;
+        String jsonString = "{\n" +
+                "\"login\": \"common\",\n" +
+                "\"email\": \"friend@common.ru\",\n" +
+                "\"birthday\": \"2000-08-20\"" +
+                "}\n";
+
         mvc.perform(post("/users")
                         .contentType("application/json")
                         .content(jsonString)
@@ -38,13 +41,12 @@ public class UserControllerTest {
 
     @Test
     public void postUserAndGetStatusBadRequest() throws Exception {
-        String jsonString = """
-                {
-                    "login": "dolore ullamco",
-                    "email": "yandex@mail.ru",
-                    "birthday": "2446-08-20"
-                }
-                """;
+        String jsonString = "{\n" +
+                            "\"login\": \"dolore ullamco\",\n" +
+                            "\"email\": \"yandex@mail.ru\",\n" +
+                            "\"birthday\": \"2446-08-20\"" +
+                            "}\n";
+
         mvc.perform(post("/users")
                         .contentType("application/json")
                         .content(jsonString)
