@@ -73,6 +73,5 @@ public class FilmControllerTest {
                 .contentType("application/json")
                 .content(jsonString)
                 ).andExpect(status().is4xxClientError());
-
     }
 }
