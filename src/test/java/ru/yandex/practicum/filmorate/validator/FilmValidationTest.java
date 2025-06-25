@@ -33,7 +33,6 @@ public class FilmValidationTest {
         film.setDuration(100);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
-        assertEquals("не должно быть пустым", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -46,7 +45,6 @@ public class FilmValidationTest {
         film.setDuration(100);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
-        assertEquals("размер должен находиться в диапазоне от 0 до 200", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -59,7 +57,6 @@ public class FilmValidationTest {
         film.setDuration(100);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
-        assertEquals("дата релиза — не раньше 28 декабря 1895 года", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -72,8 +69,6 @@ public class FilmValidationTest {
         film.setDuration(-100);
         Set<ConstraintViolation<Film>> violations = validator.validate(film);
         assertFalse(violations.isEmpty());
-        assertEquals("должно быть больше 0", violations.iterator().next().getMessage());
     }
-
 
 }

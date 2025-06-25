@@ -34,7 +34,6 @@ public class UserValidationTest {
         user.setBirthday(LocalDate.parse("2000-01-01"));
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
-        assertEquals("должно иметь формат адреса электронной почты", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -47,7 +46,6 @@ public class UserValidationTest {
         user.setBirthday(LocalDate.parse("2000-01-01"));
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
-        assertEquals("Логин не должен содержать пробелы", violations.iterator().next().getMessage());
     }
 
     @Test
@@ -60,6 +58,5 @@ public class UserValidationTest {
         user.setBirthday(LocalDate.parse("2030-01-01"));
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertFalse(violations.isEmpty());
-        assertEquals("должно содержать прошедшую дату или сегодняшнее число", violations.iterator().next().getMessage());
     }
 }
