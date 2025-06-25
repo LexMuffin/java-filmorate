@@ -19,18 +19,15 @@ public class UserControllerTest {
     @Test
     public void getAllUsersShouldReturnEmptyAnd200Code() throws Exception {
         mvc.perform(get("/users"))
-                .andExpect(status().isOk())
-                .andExpect(result -> {});
+                .andExpect(status().isOk());
     }
 
     @Test
     public void postUserAndGetStatusIsOk() throws Exception {
         String jsonString = """
-                {
-                    "login": "common",
+                {"login": "common",
                     "email": "friend@common.ru",
-                    "birthday": "2000-08-20"
-                }
+                    "birthday": "2000-08-20"}
                 """;
         mvc.perform(post("/users")
                         .contentType("application/json")
