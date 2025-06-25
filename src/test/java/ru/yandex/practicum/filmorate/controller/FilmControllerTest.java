@@ -35,7 +35,6 @@ public class FilmControllerTest {
                     "duration": 100
                     }
                     """;
-
         mvc.perform(post("/films")
                         .contentType("application/json")
                         .content(jsonString)
