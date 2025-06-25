@@ -35,6 +35,7 @@ public class FilmControllerTest {
                     "duration": 100
                 }
                 """;
+
         mvc.perform(post("/films")
                         .contentType("application/json")
                         .content(jsonString)
@@ -52,6 +53,7 @@ public class FilmControllerTest {
                     "duration": -200
                 }
                 """;
+
         mvc.perform(post("/films")
                 .contentType("application/json")
                 .content(jsonString)
