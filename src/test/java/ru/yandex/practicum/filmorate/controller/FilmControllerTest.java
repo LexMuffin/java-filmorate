@@ -21,8 +21,7 @@ public class FilmControllerTest {
     @Test
     public void getAllFilmsShouldReturnEmptyAnd200Code() throws Exception {
         mvc.perform(get("/films"))
-                .andExpect(status().isOk())
-                .andExpect(result -> {});
+                .andExpect(status().isOk());
     }
 
     @Test
