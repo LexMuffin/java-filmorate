@@ -26,11 +26,12 @@ public class FilmControllerTest {
 
     @Test
     public void postFilmAndGetStatusIsOk() throws Exception {
-        String jsonString = """
-                    {"name": "nisi eiusmod",
-                    "description": "adipisicing",
-                    "releaseDate": "1967-03-25",
-                    "duration": 100}""";
+        String jsonString = "{\n" +
+                "\"name\": \"nisi eiusmod\",\n" +
+                "\"description\": \"adipisicing\",\n" +
+                "\"releaseDate\": \"1967-03-25\",\n" +
+                "\"duration\": 100\n" +
+                "}\n";
         mvc.perform(post("/films")
                         .contentType("application/json")
                         .content(jsonString)
