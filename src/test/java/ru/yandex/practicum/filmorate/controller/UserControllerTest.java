@@ -52,7 +52,6 @@ public class UserControllerTest {
                         .contentType("application/json")
                         .content(jsonString)
                 ).andExpect(status().isBadRequest());
-
     }
 
 }

@@ -61,6 +61,7 @@ public class FilmControllerTest {
 
     @Test
     public void postFilmAndGetStatusBadRequest() throws Exception {
+
         String jsonString = """
                 {
                     "name": "Film name",
