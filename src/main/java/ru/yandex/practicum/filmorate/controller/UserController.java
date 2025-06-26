@@ -7,9 +7,7 @@ import ru.yandex.practicum.filmorate.exception.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -17,6 +15,7 @@ import java.util.Map;
 public class UserController {
 
     private final Map<Long, User> users = new HashMap<>();
+    private final Set<String> usersEmails = new HashSet<>();
 
     @GetMapping
     public Collection<User> getUsers() {
@@ -28,7 +27,7 @@ public class UserController {
     public User createUser(@Valid @RequestBody User newUser) {
         log.info("POST /users - добавление нового пользователя");
         try {
-            if (users.values().stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(newUser.getEmail()))) {
+            if (usersEmails.contains(newUser.getEmail())) {
                 log.error("Пользователь с почтой \"{}\" уже существует", newUser.getEmail());
                 throw new DuplicatedDataException("Пользователь с такой почтой уже существует");
             }
@@ -39,6 +38,7 @@ public class UserController {
             newUser.setId(getNextUserId());
             users.put(newUser.getId(), newUser);
             log.info("Пользователь с почтой \"{}\" создан", newUser.getEmail());
+            usersEmails.add(newUser.getEmail());
             return newUser;
         } catch (RuntimeException ex) {
             log.trace("Ошибка - \"{}\" при добавлении нового пользователя", ex.getMessage());
@@ -55,7 +55,7 @@ public class UserController {
                 log.error("Пользователь с идентификатором - \"{}\" не найден", newUser.getId());
                 throw new NotFoundException("Пользователь не найден");
             }
-            if (users.values().stream().anyMatch(f -> f.getEmail().equalsIgnoreCase(newUser.getEmail()))) {
+            if (usersEmails.contains(newUser.getEmail())) {
                 log.error("Пользователь с почтой \"{}\" уже существует", newUser.getEmail());
                 throw new DuplicatedDataException("Пользователь с такой почтой уже существует");
             }
@@ -68,6 +68,7 @@ public class UserController {
             existingUser.setEmail(newUser.getEmail());
             existingUser.setBirthday(newUser.getBirthday());
             log.info("Пользователь с почтой \"{}\" обновлен", newUser.getEmail());
+            usersEmails.add(newUser.getEmail());
             return existingUser;
         } catch (RuntimeException ex) {
             log.trace("Ошибка - \"{}\" при обновлении пользователя", ex.getMessage());

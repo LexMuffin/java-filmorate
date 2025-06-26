@@ -7,9 +7,7 @@ import ru.yandex.practicum.filmorate.exception.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -17,6 +15,7 @@ import java.util.Map;
 public class FilmController {
 
     private final Map<Long, Film> films = new HashMap<>();
+    private final Set<String> filmsNamesSet = new HashSet<>();
 
     @GetMapping
     public Collection<Film> getFilms() {
@@ -28,13 +27,14 @@ public class FilmController {
     public Film createFilm(@Valid @RequestBody Film newFilm) {
         log.info("POST /films - добавление нового фильма");
         try {
-            if (films.values().stream().anyMatch(f -> f.getName().equalsIgnoreCase(newFilm.getName()))) {
+            if (filmsNamesSet.contains(newFilm.getName())) {
                 log.error("Фильм \"{}\" уже существует", newFilm.getName());
                 throw new DuplicatedDataException("Фильм с таким названием уже существует");
             }
             newFilm.setId(getNextFilmId());
             films.put(newFilm.getId(), newFilm);
             log.info("Фильм \"{}\" создан", newFilm.getName());
+            filmsNamesSet.add(newFilm.getName());
             return newFilm;
         } catch (RuntimeException ex) {
             log.trace("Ошибка - \"{}\" при добавлении нового фильма", ex.getMessage());
@@ -51,7 +51,7 @@ public class FilmController {
                 log.error("Фильм с идентификатором - \"{}\" не найден", newFilm.getId());
                 throw new NotFoundException("Фильм не найден");
             }
-            if (films.values().stream().anyMatch(f -> f.getName().equalsIgnoreCase(newFilm.getName()))) {
+            if (filmsNamesSet.contains(newFilm.getName())) {
                 log.error("Фильм \"{}\" уже существует", newFilm.getName());
                 throw new DuplicatedDataException("Фильм с таким названием уже существует");
             }

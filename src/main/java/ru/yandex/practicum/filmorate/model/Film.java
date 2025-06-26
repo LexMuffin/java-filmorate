@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;
-import ru.yandex.practicum.filmorate.annotations.MinRealeseDate;
+import ru.yandex.practicum.filmorate.annotations.MinRealeaseDate;
 
 @Data
 public class Film {
@@ -14,7 +14,7 @@ public class Film {
     @Size(max = 200)
     private String description;
     @NotNull
-    @MinRealeseDate
+    @MinRealeaseDate
     @PastOrPresent
     private LocalDate releaseDate;
     @Positive
