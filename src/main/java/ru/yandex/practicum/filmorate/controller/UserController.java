@@ -1,87 +1,69 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.DuplicatedDataException;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.*;
 
 @Slf4j
 @RestController
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    private final Map<Long, User> users = new HashMap<>();
-    private final Set<String> usersEmails = new HashSet<>();
+    private final UserService userService;
 
     @GetMapping
-    public Collection<User> getUsers() {
-        log.info("GET /users - получение списка всех пользователей");
-        return users.values();
+    public Collection<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/{userId}")
+    public User getUserById(@PathVariable Long userId) {
+        return userService.getUserById(userId);
+    }
+
+    @GetMapping("/{userId}/friends")
+    public Collection<User> getFriends(@PathVariable Long userId) {
+        return userService.getFriends(userId);
+    }
+
+    @GetMapping("/{userId1}/friends/common/{userId2}")
+    public Collection<User> getCommonFriends(
+            @PathVariable Long userId1,
+            @PathVariable Long userId2
+    ) {
+        return userService.getCommonFriends(userId1, userId2);
+    }
+
+    @PutMapping("/{userId}/friends/{friendId}")
+    public void addFriend(
+            @PathVariable Long userId,
+            @PathVariable Long friendId
+    ) {
+        userService.addFriend(userId, friendId);
+    }
+
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void removeFriend(
+            @PathVariable Long userId,
+            @PathVariable Long friendId
+    ) {
+        userService.removeFriend(userId, friendId);
     }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User newUser) {
-        log.info("POST /users - добавление нового пользователя");
-        try {
-            if (usersEmails.contains(newUser.getEmail())) {
-                log.error("Пользователь с почтой \"{}\" уже существует", newUser.getEmail());
-                throw new DuplicatedDataException("Пользователь с такой почтой уже существует");
-            }
-            if (newUser.getName() == null || newUser.getName().isBlank()) {
-                newUser.setName(newUser.getLogin());
-                log.debug("Имя пользователя пустое, замена на \"{}\"", newUser.getLogin());
-            }
-            newUser.setId(getNextUserId());
-            users.put(newUser.getId(), newUser);
-            log.info("Пользователь с почтой \"{}\" создан", newUser.getEmail());
-            usersEmails.add(newUser.getEmail());
-            return newUser;
-        } catch (RuntimeException ex) {
-            log.trace("Ошибка - \"{}\" при добавлении нового пользователя", ex.getMessage());
-            throw ex;
-        }
+        return userService.createUser(newUser);
     }
 
     @PutMapping
     public User updateUser(@Valid @RequestBody User newUser) {
-        log.info("PUT /users - обновление существующего пользователя");
-        try {
-            User existingUser = users.get(newUser.getId());
-            if (existingUser == null) {
-                log.error("Пользователь с идентификатором - \"{}\" не найден", newUser.getId());
-                throw new NotFoundException("Пользователь не найден");
-            }
-            if (usersEmails.contains(newUser.getEmail())) {
-                log.error("Пользователь с почтой \"{}\" уже существует", newUser.getEmail());
-                throw new DuplicatedDataException("Пользователь с такой почтой уже существует");
-            }
-            if (newUser.getName() == null || newUser.getName().isBlank()) {
-                newUser.setName(newUser.getLogin());
-                log.debug("Имя пользователя пустое, замена на \"{}\"", newUser.getLogin());
-            }
-            existingUser.setName(newUser.getName());
-            existingUser.setLogin(newUser.getLogin());
-            existingUser.setEmail(newUser.getEmail());
-            existingUser.setBirthday(newUser.getBirthday());
-            log.info("Пользователь с почтой \"{}\" обновлен", newUser.getEmail());
-            usersEmails.add(newUser.getEmail());
-            return existingUser;
-        } catch (RuntimeException ex) {
-            log.trace("Ошибка - \"{}\" при обновлении пользователя", ex.getMessage());
-            throw ex;
-        }
+        return userService.updateUser(newUser);
     }
 
-    private Long getNextUserId() {
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
-    }
 }
