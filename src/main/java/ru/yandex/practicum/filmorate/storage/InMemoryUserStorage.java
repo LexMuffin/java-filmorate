@@ -1,7 +1,9 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -15,7 +17,12 @@ import java.util.*;
 public class InMemoryUserStorage implements UserStorage {
 
     private final Map<Long, User> users = new HashMap<>();
-    private final Set<String> usersEmails = new HashSet<>();
+    private final Set<String> usersEmailsSet = new HashSet<>();
+
+    @PostConstruct
+    public void initEmailSet() {
+        users.values().forEach(user -> usersEmailsSet.add(user.getEmail()));
+    }
 
     @Override
     public Collection<User> getAllUsers() {
@@ -37,7 +44,7 @@ public class InMemoryUserStorage implements UserStorage {
     public User createUser(User newUser) {
         log.info("POST /users - добавление нового пользователя");
         try {
-            if (usersEmails.contains(newUser.getEmail())) {
+            if (usersEmailsSet.contains(newUser.getEmail())) {
                 log.error("Пользователь с почтой \"{}\" уже существует", newUser.getEmail());
                 throw new DuplicatedDataException("Пользователь с такой почтой уже существует");
             }
@@ -48,7 +55,7 @@ public class InMemoryUserStorage implements UserStorage {
             newUser.setId(getNextUserId());
             users.put(newUser.getId(), newUser);
             log.info("Пользователь с почтой \"{}\" создан", newUser.getEmail());
-            usersEmails.add(newUser.getEmail());
+            usersEmailsSet.add(newUser.getEmail());
             return newUser;
         } catch (RuntimeException ex) {
             log.trace("Ошибка - \"{}\" при добавлении нового пользователя", ex.getMessage());
@@ -65,7 +72,7 @@ public class InMemoryUserStorage implements UserStorage {
                 log.error("Пользователь с идентификатором - \"{}\" не найден", newUser.getId());
                 throw new NotFoundException("Пользователь не найден");
             }
-            if (usersEmails.contains(newUser.getEmail())) {
+            if (usersEmailsSet.contains(newUser.getEmail())) {
                 log.error("Пользователь с почтой \"{}\" уже существует", newUser.getEmail());
                 throw new DuplicatedDataException("Пользователь с такой почтой уже существует");
             }
@@ -78,7 +85,7 @@ public class InMemoryUserStorage implements UserStorage {
             existingUser.setEmail(newUser.getEmail());
             existingUser.setBirthday(newUser.getBirthday());
             log.info("Пользователь с почтой \"{}\" обновлен", newUser.getEmail());
-            usersEmails.add(newUser.getEmail());
+            usersEmailsSet.add(newUser.getEmail());
             return existingUser;
         } catch (RuntimeException ex) {
             log.trace("Ошибка - \"{}\" при обновлении пользователя", ex.getMessage());
@@ -93,5 +100,10 @@ public class InMemoryUserStorage implements UserStorage {
                 .max()
                 .orElse(0);
         return ++currentMaxId;
+    }
+
+    @Override
+    public boolean existsUserById(Long userId) {
+        return users.containsKey(userId);
     }
 }

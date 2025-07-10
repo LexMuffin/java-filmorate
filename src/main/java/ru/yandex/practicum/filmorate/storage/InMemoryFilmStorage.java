@@ -1,9 +1,11 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 import ru.yandex.practicum.filmorate.exception.DuplicatedDataException;
@@ -22,6 +24,11 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     private final Map<Long, Film> films = new HashMap<>();
     private final Set<String> filmsNamesSet = new HashSet<>();
+
+    @PostConstruct
+    public void initNamesSet() {
+        films.values().forEach(film -> filmsNamesSet.add(film.getName()));
+    }
 
     @Override
     public Collection<Film> getAllFilms() {
