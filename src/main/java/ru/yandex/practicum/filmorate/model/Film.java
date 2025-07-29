@@ -5,10 +5,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import ru.yandex.practicum.filmorate.annotations.MinRealeaseDate;
 
 @Data
+@Builder(toBuilder = true)
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Film {
     private Long id;
     @NotEmpty
@@ -21,5 +27,7 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private Integer duration;
+    private Mpa mpa;
+    private Set<Genre> genres = new HashSet<>();
     private Set<Long> likes = new HashSet<>();
 }
