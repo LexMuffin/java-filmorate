@@ -29,16 +29,24 @@ public class FilmControllerTest {
     @Test
     public void postFilmAndGetStatusIsOk() throws Exception {
         String jsonString = "{\n" +
-                "\"name\": \"nisi eiusmod\",\n" +
-                "\"description\": \"adipisicing\",\n" +
-                "\"releaseDate\": \"1967-03-25\",\n" +
-                "\"duration\": 100\n" +
-                "}\n";
+                "    \"name\": \"Name\",\n" +
+                "    \"description\": \"Descrition\",\n" +
+                "    \"releaseDate\": \"1980-03-25\",\n" +
+                "    \"duration\": 200,\n" +
+                "    \"mpa\": {\n" +
+                "        \"id\": 5\n" +
+                "    },\n" +
+                "    \"genres\": [\n" +
+                "        {\n" +
+                "            \"id\": 1\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
         mvc.perform(post("/films")
                         .contentType("application/json")
                         .content(jsonString)
                 ).andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("nisi eiusmod"));
+                .andExpect(jsonPath("$.name").value("Name"));
     }
 
     @Test

@@ -29,6 +29,7 @@ public class UserControllerTest {
     @Test
     public void postUserAndGetStatusIsOk() throws Exception {
         String jsonString = "{\n" +
+                "\"name\": \"name_common\",\n" +
                 "\"login\": \"common\",\n" +
                 "\"email\": \"friend@common.ru\",\n" +
                 "\"birthday\": \"2000-08-20\"" +
