@@ -99,7 +99,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     }
 
     public void updateGenres(Set<Genre> genres, Long filmId) {
-        boolean isDeleted = delete(DELETE_GENRE_FILM_QUERY, filmId);
+        delete(DELETE_GENRE_FILM_QUERY, filmId);
         if (!genres.isEmpty()) {
             List<Genre> genresList = genres.stream().toList();
             jdbc.batchUpdate(INSERT_GENRE_FILM_QUERY, new BatchPreparedStatementSetter() {
